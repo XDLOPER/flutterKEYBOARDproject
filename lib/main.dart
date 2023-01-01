@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xastral/pages/home.dart';
 import 'core/template/template.dart';
 
 void main() {
@@ -14,10 +15,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: appTitle,
       theme: ThemeData(
-          primarySwatch: Colors.lightBlue,
-          appBarTheme: const AppBarTheme(backgroundColor: Colors.redAccent)),
-      home: HOME(),
-      
+        primarySwatch: Colors.lightBlue,
+      ),
+      home: TEMPLATE(),
     );
   }
 }
