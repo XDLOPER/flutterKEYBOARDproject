@@ -15,46 +15,52 @@ class TEMPLATE extends StatefulWidget {
 
 class _TEMPLATEState extends State<TEMPLATE> with TickerProviderStateMixin {
   late final TabController _tabController;
+  final int _tabLenght = 3;
 
   @override
   void initState() {
     super.initState();
 
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: _tabLenght, vsync: this);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    const String xastral = 'xastral';
     double _appBarHeight = 0;
     double _logoSize = 10;
     double _letterSpacing = 5;
     double _logoPadding = 10;
     double _bagMargin = 25;
     double _bagWrap = 15;
-    String xastral = 'xastral';
+    double _bagpadding = 3;
+
+    double _notchWidth = 10;
 
     return DefaultTabController(
-        length: 3,
+        length: _tabLenght,
         child: Scaffold(
             //general template config
             extendBody: true,
 
             //static template
             appBar: _XASTRALappBar(
-                logoSize: _logoSize,
-                logoPadding: _logoPadding,
-                xastral: xastral,
-                letterSpacing: _letterSpacing,
-                appBarHeight: _appBarHeight,
-                bagWrap: _bagWrap,
-                theme: theme,
-                bagMargin: _bagMargin),
+              bagNumber: 5,
+              logoSize: _logoSize,
+              logoPadding: _logoPadding,
+              xastral: xastral,
+              bagWrap: _bagWrap,
+              theme: theme,
+              bagMargin: _bagMargin,
+              bagPadding: _bagpadding,
+            ),
             body: _BODY(tabController: _tabController),
             drawer: _DRAWER(),
 
             // navigation setting
             bottomNavigationBar: _bottomAppBar(
+              notchWidth: _notchWidth,
               control: _tabController,
             ),
             floatingActionButtonLocation:
@@ -69,30 +75,31 @@ class _TEMPLATEState extends State<TEMPLATE> with TickerProviderStateMixin {
 class _XASTRALappBar extends StatefulWidget implements PreferredSizeWidget {
   const _XASTRALappBar({
     Key? key,
+    required this.xastral,
+    required double bagNumber,
     required double logoSize,
     required double logoPadding,
-    required this.xastral,
-    required double letterSpacing,
-    required double appBarHeight,
-    required double bagWrap,
     required this.theme,
+    required double bagWrap,
     required double bagMargin,
-  })  : _logoSize = logoSize,
+    required double bagPadding,
+  })  : _bagNumber = bagNumber,
+        _logoSize = logoSize,
         _logoPadding = logoPadding,
-        _letterSpacing = letterSpacing,
-        _appBarHeight = appBarHeight,
         _bagWrap = bagWrap,
         _bagMargin = bagMargin,
+        _bagPadding = bagPadding,
         super(key: key);
 
+  final String xastral;
+  final ThemeData theme;
+
+  final double _bagNumber;
   final double _logoSize;
   final double _logoPadding;
-  final String xastral;
-  final double _letterSpacing;
-  final double _appBarHeight;
   final double _bagWrap;
-  final ThemeData theme;
   final double _bagMargin;
+  final double _bagPadding;
 
   @override
   State<_XASTRALappBar> createState() => _XASTRALappBarState();
@@ -117,10 +124,6 @@ class _XASTRALappBarState extends State<_XASTRALappBar> {
                 left: widget._logoPadding, right: widget._logoPadding),
             child: Text(
               widget.xastral,
-              style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: widget._letterSpacing),
             ),
           ),
           SizedBox(
@@ -129,9 +132,6 @@ class _XASTRALappBarState extends State<_XASTRALappBar> {
               child: CircularProgressIndicator.adaptive()),
         ],
       ),
-      centerTitle: true,
-      backgroundColor: Colors.transparent,
-      elevation: widget._appBarHeight,
       leading: Builder(
           builder: (BuildContext context) => IconButton(
               icon: Icon(Icons.more_horiz),
@@ -145,7 +145,7 @@ class _XASTRALappBarState extends State<_XASTRALappBar> {
                   Icons.shopping_bag_outlined,
                 )),
             Container(
-              padding: EdgeInsets.all(3),
+              padding: EdgeInsets.all(widget._bagPadding),
               width: widget._bagWrap,
               height: widget._bagWrap,
               decoration: BoxDecoration(
@@ -158,13 +158,7 @@ class _XASTRALappBarState extends State<_XASTRALappBar> {
                 margin: EdgeInsets.zero,
                 padding: EdgeInsets.zero,
                 child: Center(
-                  child: Text(
-                    '11',
-                    style: TextStyle(
-                        color: widget.theme.colorScheme.onSurface,
-                        fontSize: 5,
-                        fontWeight: FontWeight.bold),
-                  ),
+                  child: Text('${widget._bagNumber}'),
                 ),
               ),
             )
@@ -232,13 +226,15 @@ class _floatingActionButton extends StatelessWidget {
 // menuBar start two selection
 class _bottomAppBar extends StatelessWidget {
   late final TabController control;
-  _bottomAppBar({Key? key, required this.control}) : super(key: key);
+  late final double notchWidth;
 
-  double _notchWidth = 10;
+  _bottomAppBar({Key? key, required this.notchWidth, required this.control})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
-      notchMargin: _notchWidth,
+      notchMargin: notchWidth,
       shape: CircularNotchedRectangle(),
       child: TabBar(
         controller: control,

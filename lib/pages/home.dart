@@ -17,10 +17,12 @@ class _HOMEState extends State<HOME> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Center(child: Text('home')),
-        FloatingActionButton(
-            child: Icon(Icons.arrow_back),
-            onPressed: (() => Navigator.maybePop(context)))
+        Text(
+          'hello World!',
+          style: TextStyle(
+            fontSize: Theme.of(context).textTheme.headline1?.fontSize,
+          ),
+        ),
       ],
     );
   }
