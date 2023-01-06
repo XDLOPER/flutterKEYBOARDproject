@@ -25,38 +25,164 @@ class _TEMPLATEState extends State<TEMPLATE> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    double _appBarHeight = 0;
+    double _logoSize = 10;
+    double _letterSpacing = 5;
+    double _logoPadding = 10;
+    double _bagMargin = 25;
+    double _bagWrap = 15;
+    String xastral = 'xastral';
+
     return DefaultTabController(
         length: 3,
         child: Scaffold(
-          //template config
-          extendBody: true,
+            //general template config
+            extendBody: true,
 
-          //static template
-          appBar: _themeAppBar(context),
-          body: _themeAppBody(context),
-          drawer: _drawer(context),
+            //static template
+            appBar: _XASTRALappBar(
+                logoSize: _logoSize,
+                logoPadding: _logoPadding,
+                xastral: xastral,
+                letterSpacing: _letterSpacing,
+                appBarHeight: _appBarHeight,
+                bagWrap: _bagWrap,
+                theme: theme,
+                bagMargin: _bagMargin),
+            body: _BODY(tabController: _tabController),
+            drawer: _DRAWER(),
 
-          // navigation
-          bottomNavigationBar: _bottomAppBar(
-            control: _tabController,
-          ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
-          floatingActionButton: FloatingActionButton(
-              onPressed: (() => _tabController.animateTo(1)),
-              child: ClipOval(
-                child: Image.asset(
-                  'assets/images/avatar.png',
-                  height: 200,
-                  width: 100,
-                  fit: BoxFit.cover,
-                ),
-              )),
-        ));
+            // navigation setting
+            bottomNavigationBar: _bottomAppBar(
+              control: _tabController,
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            floatingActionButton:
+                _floatingActionButton(tabController: _tabController)));
   }
+}
 
-  //drawer start
-  Drawer _drawer(BuildContext context) {
+// ------------ HEADER START ------------------
+
+class _XASTRALappBar extends StatefulWidget implements PreferredSizeWidget {
+  const _XASTRALappBar({
+    Key? key,
+    required double logoSize,
+    required double logoPadding,
+    required this.xastral,
+    required double letterSpacing,
+    required double appBarHeight,
+    required double bagWrap,
+    required this.theme,
+    required double bagMargin,
+  })  : _logoSize = logoSize,
+        _logoPadding = logoPadding,
+        _letterSpacing = letterSpacing,
+        _appBarHeight = appBarHeight,
+        _bagWrap = bagWrap,
+        _bagMargin = bagMargin,
+        super(key: key);
+
+  final double _logoSize;
+  final double _logoPadding;
+  final String xastral;
+  final double _letterSpacing;
+  final double _appBarHeight;
+  final double _bagWrap;
+  final ThemeData theme;
+  final double _bagMargin;
+
+  @override
+  State<_XASTRALappBar> createState() => _XASTRALappBarState();
+
+  @override
+  Size get preferredSize => Size.fromHeight(AppBar().preferredSize.height);
+}
+
+class _XASTRALappBarState extends State<_XASTRALappBar> {
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+              width: widget._logoSize.toDouble(),
+              height: widget._logoSize.toDouble(),
+              child: Container()),
+          Padding(
+            padding: EdgeInsets.only(
+                left: widget._logoPadding, right: widget._logoPadding),
+            child: Text(
+              widget.xastral,
+              style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: widget._letterSpacing),
+            ),
+          ),
+          SizedBox(
+              width: widget._logoSize.toDouble(),
+              height: widget._logoSize.toDouble(),
+              child: CircularProgressIndicator.adaptive()),
+        ],
+      ),
+      centerTitle: true,
+      backgroundColor: Colors.transparent,
+      elevation: widget._appBarHeight,
+      leading: Builder(
+          builder: (BuildContext context) => IconButton(
+              icon: Icon(Icons.more_horiz),
+              onPressed: () => Scaffold.of(context).openDrawer())),
+      actions: [
+        Stack(
+          children: [
+            IconButton(
+                onPressed: (() => false),
+                icon: const Icon(
+                  Icons.shopping_bag_outlined,
+                )),
+            Container(
+              padding: EdgeInsets.all(3),
+              width: widget._bagWrap,
+              height: widget._bagWrap,
+              decoration: BoxDecoration(
+                color: widget.theme.backgroundColor,
+                borderRadius: BorderRadius.circular(100),
+              ),
+              margin: EdgeInsets.only(
+                  top: widget._bagMargin, left: widget._bagMargin),
+              child: Container(
+                margin: EdgeInsets.zero,
+                padding: EdgeInsets.zero,
+                child: Center(
+                  child: Text(
+                    '11',
+                    style: TextStyle(
+                        color: widget.theme.colorScheme.onSurface,
+                        fontSize: 5,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            )
+          ],
+        )
+      ],
+    );
+  }
+}
+
+// drawer start
+class _DRAWER extends StatelessWidget {
+  const _DRAWER({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Drawer(
       child: ListView(children: [
         ListTile(
@@ -76,67 +202,43 @@ class _TEMPLATEState extends State<TEMPLATE> with TickerProviderStateMixin {
       ]),
     );
   }
+}
 
-  // body start
-  Widget _themeAppBody(BuildContext context) {
-    return TabBarView(
-      controller: _tabController,
-      children: [HOME(), USER(), SERVICES()],
-    );
-  }
+// actionButton start
+class _floatingActionButton extends StatelessWidget {
+  const _floatingActionButton({
+    Key? key,
+    required TabController tabController,
+  })  : _tabController = tabController,
+        super(key: key);
 
-  // appBar start
-  AppBar _themeAppBar(BuildContext context) {
-    String xastral = 'xastral';
-    return AppBar(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          logoSizedBox(width: 10, height: 10, child: Container()),
-          Padding(
-            padding: EdgeInsets.only(left: 10, right: 10),
-            child: Text(
-              xastral,
-              style: const TextStyle(
-                  fontSize: 25, fontWeight: FontWeight.bold, letterSpacing: 5),
-            ),
+  final TabController _tabController;
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+        onPressed: (() => _tabController.animateTo(1)),
+        child: ClipOval(
+          child: Image.asset(
+            'assets/images/avatar.png',
+            height: 200,
+            width: 100,
+            fit: BoxFit.cover,
           ),
-          logoSizedBox(
-              width: 10,
-              height: 10,
-              child: CircularProgressIndicator.adaptive()),
-        ],
-      ),
-      centerTitle: true,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      leading: Builder(
-          builder: (BuildContext context) => IconButton(
-              icon: Icon(Icons.more_horiz),
-              onPressed: () => Scaffold.of(context).openDrawer())),
-      actions: [
-        IconButton(onPressed: (() => false), icon: Icon(Icons.memory_outlined)),
-      ],
-    );
-  }
-
-  SizedBox logoSizedBox(
-      {required width, required height, required Widget child}) {
-    return SizedBox(
-        width: width.toDouble(), height: height.toDouble(), child: child);
+        ));
   }
 }
 
-// menuBar two selection
-
+// menuBar start two selection
 class _bottomAppBar extends StatelessWidget {
   late final TabController control;
   _bottomAppBar({Key? key, required this.control}) : super(key: key);
 
+  double _notchWidth = 10;
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
-      notchMargin: 10,
+      notchMargin: _notchWidth,
       shape: CircularNotchedRectangle(),
       child: TabBar(
         controller: control,
@@ -205,3 +307,24 @@ class _navigationBar extends StatelessWidget {
 }
 
 enum _navigateItem { home, user, blog }
+
+// ------------ BODY START ------------------
+
+// body start
+class _BODY extends StatelessWidget {
+  const _BODY({
+    Key? key,
+    required TabController tabController,
+  })  : _tabController = tabController,
+        super(key: key);
+
+  final TabController _tabController;
+
+  @override
+  Widget build(BuildContext context) {
+    return TabBarView(
+      controller: _tabController,
+      children: [HOME(), USER(), SERVICES()],
+    );
+  }
+}
